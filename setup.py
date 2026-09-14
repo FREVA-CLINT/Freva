@@ -168,6 +168,7 @@ setup(
             "sphinxcontrib-httpdomain",
             "pint",
             "pydata-sphinx-theme",
+            "pytz",
             "pint-xarray",
             "recommonmark",
             "sphinx==7.3.7",
