@@ -660,11 +660,44 @@ def test_append_unique_output():
 
 
 @mock.patch("os.getpid", lambda: 12345)
-def test_set_environment(dummy_plugin):
+def test_set_environment(dummy_plugin, tmp_path):
+    """Use the plugin GIS data without leaking it into the caller."""
     os.remove(dummy_plugin.plugin_output_file)
-    print(dummy_plugin.plugin_output_file)
-    with dummy_plugin._set_environment(rowid=0, is_interactive_job=False) as context:
-        pass
+    env_root = tmp_path / "plugin_env"
+    conda_path = env_root / "bin"
+    gdal_data = env_root / "share" / "gdal"
+    proj_data = env_root / "share" / "proj"
+    gdal_data.mkdir(parents=True)
+    proj_data.mkdir(parents=True)
+    external_environment = {
+        "PATH": "/external/plugin/bin",
+        "GDAL_DATA": "/external/plugin/gdal",
+        "GDAL_DRIVER_PATH": "/external/plugin/gdal-drivers",
+        "OGR_DRIVER_PATH": "/external/plugin/ogr-drivers",
+        "PROJ_DATA": "/external/plugin/proj",
+        "PROJ_LIB": "/external/plugin/proj-lib",
+        "EXTERNAL_PLUGIN_SETTING": "preserve-me",
+    }
+
+    with mock.patch.dict(os.environ, external_environment, clear=True):
+        with mock.patch.object(
+            type(dummy_plugin),
+            "conda_path",
+            new_callable=mock.PropertyMock,
+            return_value=str(conda_path),
+        ):
+            with pytest.raises(RuntimeError):
+                with dummy_plugin._set_environment(rowid=0, is_interactive_job=False):
+                    assert os.environ["PATH"] == f"{conda_path}:/external/plugin/bin"
+                    assert os.environ["GDAL_DATA"] == str(gdal_data)
+                    assert os.environ["PROJ_DATA"] == str(proj_data)
+                    assert os.environ["PROJ_LIB"] == str(proj_data)
+                    assert "GDAL_DRIVER_PATH" not in os.environ
+                    assert "OGR_DRIVER_PATH" not in os.environ
+                    os.environ["SET_BY_PLUGIN"] = "must-not-leak"
+                    raise RuntimeError
+
+        assert dict(os.environ) == external_environment
 
 
 @mock.patch("os.getpid", lambda: 12345)

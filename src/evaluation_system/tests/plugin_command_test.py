@@ -122,6 +122,12 @@ def test_plugin_status(dummy_env, caplog) -> None:
     res = freva.run_plugin("dummyplugin", the_number=2, other=-15, batchmode=True)
     with pytest.raises(ValueError):
         res.wait(2)
+    # The mock scheduler starts the job in a detached process.  Give it a
+    # bounded amount of time to transition from ``scheduled`` to ``running``
+    # instead of assuming that it has done so after the two-second timeout.
+    deadline = time.monotonic() + 5
+    while res.status == "scheduled" and time.monotonic() < deadline:
+        time.sleep(0.1)
     assert res.status == "running"
     res.kill()
     time.sleep(0.5)

@@ -130,7 +130,9 @@ def test_get_time_frequency(valid_data_files: Path) -> None:
     assert data_reader.get_time_frequency(year) == "yr"
 
 
-def test_get_file_name_from_metadata(valid_data_files: Path) -> None:
+def test_get_file_name_from_metadata(
+    valid_data_files: Path, time_mock: mock_datetime
+) -> None:
     from evaluation_system.api.user_data import DataReader
 
     in_file = list(valid_data_files.rglob("*.*"))[0]

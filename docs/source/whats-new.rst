@@ -10,7 +10,7 @@ v2506.0.2
 
 Internal Changes
 ++++++++++++++++
-- Add deprication warning.
+- Add deprecation warning.
 
 v2506.0.0
 ~~~~~~~~~

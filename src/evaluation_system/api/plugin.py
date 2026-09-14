@@ -385,7 +385,10 @@ class PluginAbstract(abc.ABC):
         self, rowid: Optional[int], is_interactive_job: bool
     ) -> Iterator[None]:
         """Set the environment."""
-        env_path = os.environ["PATH"]
+        env = {**os.environ}
+        env_root = Path(self.conda_path).parent
+        gdal_data = env_root / "share" / "gdal"
+        proj_data = env_root / "share" / "proj"
         stdout = [sys.stdout]
         stderr = [sys.stderr]
         try:
@@ -394,7 +397,19 @@ class PluginAbstract(abc.ABC):
             self.plugin_output_file.parent.mkdir(parents=True, mode=0o2777)
             self.plugin_output_file.touch(mode=0o2755)
         try:
-            os.environ["PATH"] = f"{self.conda_path}:{env_path}"
+            os.environ["PATH"] = f"{self.conda_path}:{env['PATH']}"
+            for key in (
+                "PROJ_DATA",
+                "PROJ_LIB",
+                "GDAL_DATA",
+                "GDAL_DRIVER_PATH",
+                "OGR_DRIVER_PATH",
+            ):
+                os.environ.pop(key, None)
+            if gdal_data.is_dir():
+                os.environ["GDAL_DATA"] = str(gdal_data)
+            if proj_data.is_dir():
+                os.environ["PROJ_DATA"] = os.environ["PROJ_LIB"] = str(proj_data)
             if is_interactive_job is True:
                 f = self.plugin_output_file.open("w")
                 console = Console(file=f, force_terminal=True)
@@ -410,7 +425,9 @@ class PluginAbstract(abc.ABC):
                 console.print_exception(show_locals=False)
             raise error
         finally:
-            os.environ["PATH"] = env_path
+            os.environ.clear()
+            os.environ.update(env)
+
             sys.stdout = stdout[0]
             sys.stderr = stderr[0]
             if is_interactive_job is True:
