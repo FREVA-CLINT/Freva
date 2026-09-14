@@ -6,6 +6,7 @@ Created on 13.05.2016
 
 import datetime
 import os
+import stat
 import sys
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
@@ -662,7 +663,7 @@ def test_append_unique_output():
 @mock.patch("os.getpid", lambda: 12345)
 def test_set_environment(dummy_plugin, tmp_path):
     """Use the plugin GIS data without leaking it into the caller."""
-    os.remove(dummy_plugin.plugin_output_file)
+    plugin_output_file = tmp_path / "plugin-output" / "dummy.local"
     env_root = tmp_path / "plugin_env"
     conda_path = env_root / "bin"
     gdal_data = env_root / "share" / "gdal"
@@ -682,22 +683,33 @@ def test_set_environment(dummy_plugin, tmp_path):
     with mock.patch.dict(os.environ, external_environment, clear=True):
         with mock.patch.object(
             type(dummy_plugin),
-            "conda_path",
+            "plugin_output_file",
             new_callable=mock.PropertyMock,
-            return_value=str(conda_path),
+            return_value=plugin_output_file,
         ):
-            with pytest.raises(RuntimeError):
-                with dummy_plugin._set_environment(rowid=0, is_interactive_job=False):
-                    assert os.environ["PATH"] == f"{conda_path}:/external/plugin/bin"
-                    assert os.environ["GDAL_DATA"] == str(gdal_data)
-                    assert os.environ["PROJ_DATA"] == str(proj_data)
-                    assert os.environ["PROJ_LIB"] == str(proj_data)
-                    assert "GDAL_DRIVER_PATH" not in os.environ
-                    assert "OGR_DRIVER_PATH" not in os.environ
-                    os.environ["SET_BY_PLUGIN"] = "must-not-leak"
-                    raise RuntimeError
+            with mock.patch.object(
+                type(dummy_plugin),
+                "conda_path",
+                new_callable=mock.PropertyMock,
+                return_value=str(conda_path),
+            ):
+                with pytest.raises(RuntimeError):
+                    with dummy_plugin._set_environment(
+                        rowid=0, is_interactive_job=False
+                    ):
+                        assert (
+                            os.environ["PATH"] == f"{conda_path}:/external/plugin/bin"
+                        )
+                        assert os.environ["GDAL_DATA"] == str(gdal_data)
+                        assert os.environ["PROJ_DATA"] == str(proj_data)
+                        assert os.environ["PROJ_LIB"] == str(proj_data)
+                        assert "GDAL_DRIVER_PATH" not in os.environ
+                        assert "OGR_DRIVER_PATH" not in os.environ
+                        os.environ["SET_BY_PLUGIN"] = "must-not-leak"
+                        raise RuntimeError
 
         assert dict(os.environ) == external_environment
+    assert stat.S_IMODE(plugin_output_file.parent.stat().st_mode) == 0o2775
 
 
 @mock.patch("os.getpid", lambda: 12345)

@@ -394,7 +394,16 @@ class PluginAbstract(abc.ABC):
         try:
             self.plugin_output_file.touch(mode=0o2755)
         except FileNotFoundError:
-            self.plugin_output_file.parent.mkdir(parents=True, mode=0o2777)
+            plugin_dir = self.plugin_output_file.parent
+            plugin_dir.mkdir(parents=True, exist_ok=True)
+            plugin_dir.chmod(0o2775)
+            actual_mode = stat.S_IMODE(plugin_dir.stat().st_mode)
+            if actual_mode != 0o2775:
+                log.warning(
+                    "%s has mode %o, expected 2775 (group writable)",
+                    plugin_dir,
+                    actual_mode,
+                )
             self.plugin_output_file.touch(mode=0o2755)
         try:
             os.environ["PATH"] = f"{self.conda_path}:{env['PATH']}"
