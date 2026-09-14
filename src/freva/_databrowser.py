@@ -8,9 +8,10 @@ from pathlib import Path
 from typing import Any, Iterator, Optional, Union, overload
 
 import lazy_import
-from evaluation_system.misc import logger
 from rich.console import Console
 from typing_extensions import Literal
+
+from evaluation_system.misc import logger
 
 from .utils import handled_exception
 

@@ -128,9 +128,7 @@ def test_search_files_cmd(dummy_solr, capsys):
 
 def test_search_facets(dummy_solr, capsys):
     cmd = shlex.split("databrowser")
-    all_facets = [
-        map(str.strip, f.split(":"))
-        for f in """cmor_table: aero,amon
+    all_facets = [map(str.strip, f.split(":")) for f in """cmor_table: aero,amon
 product: output1
 realm: aerosol,atmos
 dataset: cmip5
@@ -142,11 +140,7 @@ variable: tauu,ua,wetso2
 model: hadcm3
 ensemble: r2i1p1,r7i2p1,r9i3p1
 fs_type: posix
-""".split(
-            "\n"
-        )
-        if f
-    ]
+""".split("\n") if f]
     run_cli(cmd + ["--facet", "all"])
     res = capsys.readouterr().out
     res = [map(str.strip, f.split(":")) for f in res.split("\n") if f]
@@ -184,10 +178,7 @@ def test_solr_backwards(dummy_solr, capsys):
     run_cli(cmd)
     res = capsys.readouterr().out
     res = dict([map(str.strip, f.split(":")) for f in res.split("\n") if f])
-    target = dict(
-        [
-            map(str.strip, f.split(":"))
-            for f in """cmor_table: amon
+    target = dict([map(str.strip, f.split(":")) for f in """cmor_table: amon
 product: output1
 realm: atmos
 dataset: cmip5
@@ -199,11 +190,6 @@ variable: tauu
 model: hadcm3
 ensemble: r9i3p1
 fs_type: posix
-""".split(
-                "\n"
-            )
-            if f
-        ]
-    )
+""".split("\n") if f])
     assert target["time_frequency"] == res["time_frequency"]
     assert target["ensemble"] == res["ensemble"]

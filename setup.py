@@ -61,8 +61,7 @@ def gather_completion_scripts(tempdir):
     data_files = []
     for shell, target_path in shells.items():
         comp_files = [
-            str(f.relative_to(this_dir))
-            for f in (COMPLETION_DIR / shell).rglob("*")
+            str(f.relative_to(this_dir)) for f in (COMPLETION_DIR / shell).rglob("*")
         ]
         data_files.append((str(target_path), comp_files))
     return data_files + prep_tcsh_completion(tempdir)
@@ -99,9 +98,7 @@ def get_data_files():
     files = []
     for d in dirs:
         target_dir = d.relative_to(this_dir)
-        add_files = [
-            str(f.relative_to(this_dir)) for f in d.rglob("*") if f.is_file()
-        ]
+        add_files = [str(f.relative_to(this_dir)) for f in d.rglob("*") if f.is_file()]
         if add_files:
             files.append((str(target_dir), add_files))
     files.append(("", ["deploy.py"]))
@@ -171,6 +168,7 @@ setup(
             "sphinxcontrib-httpdomain",
             "pint",
             "pydata-sphinx-theme",
+            "pytz",
             "pint-xarray",
             "recommonmark",
             "sphinx==7.3.7",
@@ -211,7 +209,7 @@ setup(
         ],
     },
     entry_points={"console_scripts": entry_points},
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     classifiers=[
         "Development Status :: 7 - Inactive",
         "Environment :: Console",
@@ -220,8 +218,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

@@ -22,9 +22,7 @@ from recommonmark.parser import CommonMarkParser
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
 os.environ.setdefault(
     "EVALUATION_SYSTEM_CONFIG_FILE",
-    os.path.abspath(
-        os.path.join("..", "..", "compose", "local-eval-system.conf")
-    ),
+    os.path.abspath(os.path.join("..", "..", "compose", "local-eval-system.conf")),
 )
 os.environ.setdefault(
     "EVALUATION_SYSTEM_DRS_CONFIG_FILE",
@@ -123,9 +121,7 @@ html_meta = {
 }
 
 ogp_site_url = "https://freva-org.github.io/freva-legacy"
-opg_image = (
-    "https://freva-org.github.io/freva-admin/_images/freva_flowchart-new.png",
-)
+opg_image = ("https://freva-org.github.io/freva-admin/_images/freva_flowchart-new.png",)
 ogp_type = "website"
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',

@@ -84,13 +84,15 @@ def mock_config(keyfile, patch_env=True):
 
 @pytest.fixture(scope="session")
 def time_mock():
-    with mock.patch("datetime.date", mock_datetime(1999, 9, 9)) as date_mock:
-        import evaluation_system
+    """Freeze the date used for generated user-data versions.
 
-        try:
-            evaluation_system.api.user_data.date = date_mock
-        except AttributeError:
-            pass
+    Patch the imported application dependency, rather than ``datetime.date``
+    itself.  Replacing the global type makes libraries imported afterwards
+    (for example Dask and PyArrow) see a non-type where they expect a class.
+    """
+    from evaluation_system.api import user_data
+
+    with mock.patch.object(user_data, "date", mock_datetime(1999, 9, 9)) as date_mock:
         yield date_mock
 
 

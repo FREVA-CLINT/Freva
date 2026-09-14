@@ -140,7 +140,7 @@ def supermakedirs(path, mode):
 
     if not path or os.path.exists(path):
         return []
-    (head, tail) = os.path.split(path)
+    head, tail = os.path.split(path)
     res = supermakedirs(head, mode)
     # In some rare cases we run into race conditions creating directories.
     # This prevents the system from raising an error

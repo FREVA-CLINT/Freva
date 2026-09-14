@@ -5,12 +5,22 @@ What's new
    :maxdepth: 0
    :titlesonly:
 
+v2609.0.1
+~~~~~~~~~
+
+Bug fixes
++++++++++
+- Use each plugin environment's GDAL and PROJ data paths instead of inherited
+  host settings.
+- Ensure plugin output directories receive the required group permissions,
+  regardless of the process umask.
+
 v2506.0.2
 ~~~~~~~~~
 
 Internal Changes
 ++++++++++++++++
-- Add deprication warning.
+- Add deprecation warning.
 
 v2506.0.0
 ~~~~~~~~~

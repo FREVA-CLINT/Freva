@@ -320,8 +320,7 @@ def test_get_history(dummy_settings, temp_user):
 def testDynamicPluginLoading(dummy_env, temp_user):
     import evaluation_system.api.plugin_manager as pm
 
-    basic_plugin = textwrap.dedent(
-        """
+    basic_plugin = textwrap.dedent("""
         from sys import modules
         plugin = modules['evaluation_system.api.plugin']
         parameters = modules['evaluation_system.api.parameters']
@@ -337,8 +336,7 @@ def testDynamicPluginLoading(dummy_env, temp_user):
 
             def runTool(self, config_dict=None):
                 print("%s", config_dict)
-        """
-    )
+        """)
 
     with tempfile.TemporaryDirectory(prefix="dyn_plugin") as path1:
         os.makedirs(os.path.join(path1, "a/b"))
@@ -374,16 +372,14 @@ def test_load_invalid_plugin(dummy_env, temp_user):
     import evaluation_system.api.plugin_manager as pm
 
     # this intentionally does not define the required properties and methods
-    basic_plugin = textwrap.dedent(
-        """
+    basic_plugin = textwrap.dedent("""
         from sys import modules
         plugin = modules['evaluation_system.api.plugin']
         parameters = modules['evaluation_system.api.parameters']
 
         class TestPlugin(plugin.PluginAbstract):
             pass
-        """
-    )
+        """)
 
     with tempfile.TemporaryDirectory(prefix="dyn_plugin") as plugin_dir:
         os.makedirs(os.path.join(plugin_dir, "a"))
