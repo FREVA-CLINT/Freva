@@ -15,5 +15,5 @@ pandas==2.3.1
 pymysql==1.1.1
 requests==2.32.3
 toml==0.10.2
-toolz==1.0.0
+toolz==1.1.0
 xarray==2024.11.0
