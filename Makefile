@@ -23,7 +23,7 @@ test_coverage:
 	    --junitxml report.xml --current-env --cov-report xml \
 		--ignore=src/evaluation_system/tests/esgf_test.py \
 		$(PWD)/src/evaluation_system/tests
-	python3 -m coverage report
+	python3 -m coverage report -i
 
 prepdocs:
 	rm -rf /tmp/animator
