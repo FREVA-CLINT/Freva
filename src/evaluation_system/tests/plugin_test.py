@@ -241,9 +241,7 @@ def test_save_config(dummy_plugin):
     )
     res_str.truncate(0)
     dummy.save_configuration(res_str, {"a": 1}, include_defaults=True)
-    assert (
-        res_str.getvalue().strip("\x00").strip()
-        == """[DummyPlugin]
+    assert res_str.getvalue().strip("\x00").strip() == """[DummyPlugin]
 #: This is
 #: a test
 a=1
@@ -253,9 +251,7 @@ a=1
 #: test.
 #b=None
 
-"""
-        + batchmode_options
-    )
+""" + batchmode_options
 
     dummy.__parameters__ = ParameterDictionary(
         Integer(
@@ -397,8 +393,7 @@ def test_help(dummy_plugin):
     ]
     for desc in descriptions:
         setattr(dummy, desc[0], desc[1])
-        resource = (
-            """DummyPlugin (v1.2.3): %s
+        resource = """DummyPlugin (v1.2.3): %s
 Options:
 a       (default: 1)
     This is the value of a
@@ -409,9 +404,7 @@ example (default: test)
 extra_scheduler_options (default: )
                         Set additional options for the job submission to the
                         workload manager (, separated). Note: batchmode and web
-                        only."""
-            % desc[1]
-        )
+                        only.""" % desc[1]
         assert similar_string(dummy.get_help().strip(), resource.strip(), 0.9)
 
 

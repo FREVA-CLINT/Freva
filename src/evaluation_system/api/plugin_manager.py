@@ -1427,7 +1427,7 @@ def get_version(pluginname: str) -> tuple[int, int, int]:
     tool_name = pluginname.lower()
     p = get_plugin_instance(pluginname)
     version = repr(p.__version__)
-    (repos_tool, version_tool) = get_plugin_version(pluginname)
+    repos_tool, version_tool = get_plugin_version(pluginname)
     version_id = (
         User()
         .getUserDB()

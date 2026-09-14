@@ -18,7 +18,7 @@ repos:
           - src
   # https://github.com/python/black#version-control-integration
   - repo: https://github.com/psf/black
-    rev: 24.3.0
+    rev: 26.5.1
     hooks:
       - id: black
         args:

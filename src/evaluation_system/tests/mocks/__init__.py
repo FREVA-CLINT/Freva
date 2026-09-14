@@ -27,9 +27,7 @@ project=ch1187
 memory=10G
 [plugin:DummyPlugin]
 python_path={dummy_path}
-module=dummy""".format(
-    dummy_path=DUMMY_PATH
-)
+module=dummy""".format(dummy_path=DUMMY_PATH)
 
 TEST_DRS = """
 [cmip5]

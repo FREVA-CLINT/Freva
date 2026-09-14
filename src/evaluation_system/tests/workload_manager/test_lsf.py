@@ -153,8 +153,7 @@ def lsf_unit_detection_helper(expected_unit, conf_text=None):
     ],
 )
 def test_lsf_unit_detection(lsf_units_string, expected_unit):
-    conf_text = dedent(
-        """
+    conf_text = dedent("""
         LSB_JOB_MEMLIMIT=Y
         LSB_MOD_ALL_JOBS=N
         LSF_PIM_SLEEPTIME_UPDATE=Y
@@ -162,9 +161,7 @@ def test_lsf_unit_detection(lsf_units_string, expected_unit):
         %s
         LSB_DISABLE_LIMLOCK_EXCL=Y
         LSB_SUBK_SHOW_EXEC_HOST=Y
-        """
-        % lsf_units_string
-    )
+        """ % lsf_units_string)
     lsf_unit_detection_helper(expected_unit, conf_text)
 
 

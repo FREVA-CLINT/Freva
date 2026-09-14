@@ -412,7 +412,7 @@ def plugin_info(
     if what not in choices:
         raise ValueError(f"what argument must be one of {', '.join(choices)}")
     if what == "repository":
-        (repos, version) = pm.get_plugin_version(tool_name)
+        repos, version = pm.get_plugin_version(tool_name)
         return f"Repository and version of :{tool_name}\n{repos}\n{version}"
     tool_dict = _get_tool_dict(tool_name, **options)
     with NamedTemporaryFile() as tf:
@@ -515,7 +515,7 @@ def run_plugin(
     ]
     # now run the tool
     result, tool_id = None, -1
-    (error, warning) = pm.get_error_warning(tool_name)
+    error, warning = pm.get_error_warning(tool_name)
     if warning:
         logger.warning(warning)
     if error:
