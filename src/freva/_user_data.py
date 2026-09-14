@@ -8,7 +8,7 @@ import shutil
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, cast
 
 import lazy_import
 
@@ -63,16 +63,16 @@ class UserData:
     @staticmethod
     def _set_add_method(
         how: str,
-    ) -> Callable[[os.PathLike, os.PathLike], None]:
+    ) -> Callable[[os.PathLike, os.PathLike], object]:
         choices = "copy, link, move, symlink, cp, ln, mv"
         if how in ["copy", "cp"]:
-            return shutil.copy
+            return cast(Callable[[os.PathLike, os.PathLike], object], shutil.copy)
         if how in ["symlink", "ln"]:
-            return os.symlink
+            return cast(Callable[[os.PathLike, os.PathLike], object], os.symlink)
         if how in ["move", "mv"]:
-            return shutil.move
+            return cast(Callable[[os.PathLike, os.PathLike], object], shutil.move)
         if how in ["link"]:
-            return os.link
+            return cast(Callable[[os.PathLike, os.PathLike], object], os.link)
         raise ValueError(f"Invalid Method: valid methods are {choices}")
 
     @handled_exception

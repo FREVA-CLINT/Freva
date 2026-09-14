@@ -1534,7 +1534,7 @@ def find_plugin_class(mod: ModuleType) -> type[PluginAbstract]:
     for attr_name in dir(mod):
         attr = getattr(mod, attr_name)
         if inspect.isclass(attr) and attr.__base__ == PluginAbstract:
-            return attr
+            return cast(type[PluginAbstract], attr)
     raise PluginManagerException()
 
 
