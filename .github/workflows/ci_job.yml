@@ -59,7 +59,7 @@ jobs:
       -
         name: Install dependencies on python ${{matrix.python-version}}
         run: |
-          conda create -c conda-forge -n tests -y -q python pip cartopy make mysql-common==8.3.0 mysql-libs=8.3.0 mysqlclient
+          conda create -c conda-forge -n tests -y -q python=${{ matrix.python-version }} pip cartopy make mysql-common==8.3.0 mysql-libs=8.3.0 mysqlclient
           conda run -n tests python -m pip install -e .[test] dask==2024.8.0
       -
         name: Running tests for python ${{ matrix.python-version }}
